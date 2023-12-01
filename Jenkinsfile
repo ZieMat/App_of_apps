@@ -37,7 +37,21 @@ pipeline {
             steps {
                 sh "docker rm -f frontend backend"
             }
-        }      
+        }
+
+
+        stage('Deploy application') {
+            steps {
+                script {
+                    withEnv(["FRONTEND_IMAGE=$frontendImage:$frontendDockerTag", 
+                             "BACKEND_IMAGE=$backendImage:$backendDockerTag"]) {
+                       docker.withRegistry("$dockerRegistry", "$registryCredentials") {
+                            sh "docker-compose up -d"
+                        }
+                    }
+                }
+            }
+        }             
 
     }
 
