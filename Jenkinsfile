@@ -22,14 +22,12 @@ pipeline {
               checkout scm
             }
         }
-    }
 
         stage('Adjust version') {
             steps {
                 script{
                     backendDockerTag = params.backendDockerTag.isEmpty() ? "latest" : params.backendDockerTag
-                    frontendDockerTag = params.frontendDockerTag.isEmpty() ? "latest" : params.frontendDockerTag
-                    
+                    frontendDockerTag = params.frontendDockerTag.isEmpty() ? "latest" : params.frontendDockerTag 
                     currentBuild.description = "Backend: ${backendDockerTag}, Frontend: ${frontendDockerTag}"
                 }
             }
@@ -39,6 +37,10 @@ pipeline {
             steps {
                 sh "docker rm -f frontend backend"
             }
-        }        
+        }      
+
+    }
+
+  
 
 }
