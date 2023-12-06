@@ -11,7 +11,9 @@ pipeline {
         label 'agent'
     }
 
-
+    tools {
+        terraform 'Terraform'
+    }
 
     environment {
         PIP_BREAK_SYSTEM_PACKAGES = 1
@@ -64,6 +66,20 @@ pipeline {
                 sh "python3 -m pytest test/selenium/frontendTest.py"
             }
         }
+
+        stage('Run terraform') {
+            steps {
+                dir('Terraform') {                
+                    git branch: 'main', url: 'https://github.com/ZieMat/Terraform'
+                    withAWS(credentials:'AWS', region: 'us-east-1') {
+                            sh 'terraform init -backend-config=bucket=panda-academy-panda-devops-core-n'
+                            sh 'terraform apply -auto-approve -var bucket_name=panda-academy-panda-devops-core-n'
+                            
+                    } 
+                }
+            }
+        }
+
     }
 
     post {
